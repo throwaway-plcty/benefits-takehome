@@ -1,8 +1,9 @@
 import { Button, Space, Spin, Typography } from 'antd';
 import { Dependent, Relationship } from './useDependentsBenefits';
 import * as React from 'react';
-import { DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import useNotification from 'antd/es/notification/useNotification';
+import { FormType } from './DependentForm';
 
 type Props = {
   dependent: Dependent;
@@ -11,9 +12,15 @@ type Props = {
     successCallback?: () => void
   ): Promise<void>;
   cost: number;
+  openDrawer: (type: FormType, initialData?: { [key: string]: any }) => void;
 };
 
-export const DependentItem = ({ dependent, removeDependent, cost }: Props) => {
+export const DependentItem = ({
+  dependent,
+  removeDependent,
+  cost,
+  openDrawer,
+}: Props) => {
   const [deleting, setDeleting] = React.useState(false);
   const [notification] = useNotification();
   const onDelete = async () => {
@@ -30,7 +37,7 @@ export const DependentItem = ({ dependent, removeDependent, cost }: Props) => {
   return (
     <Space direction='horizontal' key={dependent.id}>
       <Typography.Text>{`${dependent.firstName} ${dependent.lastName} - ${dependent.relationship}`}</Typography.Text>
-      {cost ? <Typography.Text>{`- cost $${cost}`}</Typography.Text> : <Spin />}
+      {cost ? <Typography.Text>{`- $${cost}`}</Typography.Text> : <Spin />}
       <Button
         size='small'
         onClick={onDelete}
@@ -38,6 +45,11 @@ export const DependentItem = ({ dependent, removeDependent, cost }: Props) => {
         disabled={dependent.relationship === Relationship.employee}
         danger
         icon={<DeleteOutlined size={10} />}
+      />
+      <Button
+        size='small'
+        onClick={() => openDrawer(FormType.edit, dependent)}
+        icon={<EditOutlined size={10} />}
       />
     </Space>
   );

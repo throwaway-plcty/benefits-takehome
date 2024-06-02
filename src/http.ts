@@ -48,6 +48,22 @@ export const http = {
       }, 1500);
     });
   },
+  editDependent: (dependent: Dependent) => {
+    const dependents =
+      safeGetFromLocalStorage<Dependent[]>(dependentsStorageKey) || [];
+    const index = dependents.findIndex(
+      (existing) => existing.id === dependent.id
+    );
+    if (index >= 0) {
+      dependents.splice(index, 1, dependent);
+      localStorage.setItem(dependentsStorageKey, JSON.stringify(dependents));
+    }
+    return new Promise<Dependent[]>((res) => {
+      setTimeout(() => {
+        res(dependents);
+      }, 1500);
+    });
+  },
   removeDependent: (dependent: Dependent) => {
     const existingDependents =
       safeGetFromLocalStorage<Dependent[]>(dependentsStorageKey) || [];

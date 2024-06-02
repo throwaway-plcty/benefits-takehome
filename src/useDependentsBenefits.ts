@@ -20,6 +20,7 @@ export const useDependentBenefits = () => {
   const [costBreakdown, setCostBreakdown] = React.useState<Breakdown | null>(
     null
   );
+
   React.useEffect(() => {
     setLoading(true);
     Promise.all([
@@ -52,8 +53,31 @@ export const useDependentBenefits = () => {
     });
   };
 
-  const addDependent = (dependent: Dependent) =>
-    setDependents((existing) => [...existing, dependent]);
+  const addDependent = (
+    dependent: Omit<Dependent, 'id'>,
+    successCallback?: () => void
+  ) =>
+    http.addDependent(dependent).then((depToAdd) => {
+      successCallback?.();
+      setDependents((existing) => [...existing, depToAdd]);
+    });
 
-  return { dependents, addDependent, removeDependent, loading, costBreakdown };
+  const editDependent = (
+    dependent: Dependent,
+    successCallback?: () => void
+  ) => {
+    return http.editDependent(dependent).then((updatedDependents) => {
+      successCallback?.();
+      setDependents(updatedDependents);
+    });
+  };
+
+  return {
+    dependents,
+    addDependent,
+    removeDependent,
+    loading,
+    costBreakdown,
+    editDependent,
+  };
 };

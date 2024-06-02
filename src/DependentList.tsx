@@ -2,6 +2,7 @@ import { Skeleton } from 'antd';
 import { Dependent } from './useDependentsBenefits';
 import { DependentItem } from './DependentItem';
 import { Breakdown } from './http';
+import { FormType } from './DependentForm';
 
 type Props = {
   dependents: Dependent[];
@@ -11,12 +12,14 @@ type Props = {
     successCallback?: () => void
   ): Promise<void>;
   costBreakdown: Breakdown | null;
+  openDrawer: (type: FormType, initialData?: { [key: string]: any }) => void;
 };
 export const DependentList = ({
   dependents,
   loading,
   removeDependent,
   costBreakdown,
+  openDrawer,
 }: Props) => {
   return (
     <Skeleton
@@ -30,6 +33,7 @@ export const DependentList = ({
           key={dependent.id}
           removeDependent={removeDependent}
           dependent={dependent}
+          openDrawer={openDrawer}
           cost={getDependentCost(dependent.id, costBreakdown!)}
         />
       ))}

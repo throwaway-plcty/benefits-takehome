@@ -1,17 +1,32 @@
 import { Badge, Button, Divider, Drawer, Flex, Space, Typography } from 'antd';
 import { UserAddOutlined } from '@ant-design/icons';
 import * as React from 'react';
-import { DependentForm } from './DependentForm';
+import { DependentForm, FormType } from './DependentForm';
 import { useDependentBenefits } from './useDependentsBenefits';
 import { DependentList } from './DependentList';
 import { BenefitsCost } from './BenefitsCost';
 
 export const BenefitsSummary = () => {
-  const [open, setDrawerOpen] = React.useState(false);
-  const { dependents, addDependent, removeDependent, loading, costBreakdown } =
-    useDependentBenefits();
-  const closeDrawer = () => setDrawerOpen(false);
-  const openDrawer = () => setDrawerOpen(true);
+  const [drawerState, setDrawerState] = React.useState<{
+    open: boolean;
+    type: FormType;
+    initialData?: { [key: string]: any };
+  }>({ open: false, type: FormType.create });
+  const {
+    dependents,
+    addDependent,
+    removeDependent,
+    loading,
+    costBreakdown,
+    editDependent,
+  } = useDependentBenefits();
+  const closeDrawer = () =>
+    setDrawerState((existingDrawerState) => ({
+      ...existingDrawerState,
+      open: false,
+    }));
+  const openDrawer = (type: FormType, initialData?: { [key: string]: any }) =>
+    setDrawerState({ open: true, type, initialData });
 
   return (
     <Flex
@@ -34,24 +49,32 @@ export const BenefitsSummary = () => {
         <DependentList
           dependents={dependents}
           removeDependent={removeDependent}
+          openDrawer={openDrawer}
           loading={loading}
           costBreakdown={costBreakdown}
         />
-        <Button icon={<UserAddOutlined />} type='dashed' onClick={openDrawer}>
+        <Button
+          icon={<UserAddOutlined />}
+          type='dashed'
+          onClick={() => openDrawer(FormType.create)}
+        >
           Add Dependent
         </Button>
       </Flex>
       <Drawer
         width='400px'
-        title='Add a dependent'
-        open={open}
+        title={drawerState.type}
+        open={drawerState.open}
         onClose={closeDrawer}
         destroyOnClose
       >
         <DependentForm
+          formType={drawerState.type}
           dependents={dependents}
+          initialData={drawerState.initialData}
           closeDrawer={closeDrawer}
           addDependent={addDependent}
+          editDependent={editDependent}
         />
       </Drawer>
     </Flex>
