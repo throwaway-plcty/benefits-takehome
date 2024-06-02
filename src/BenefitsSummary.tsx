@@ -4,10 +4,11 @@ import * as React from 'react';
 import { DependentForm } from './DependentForm';
 import { useDependentBenefits } from './useDependentsBenefits';
 import { DependentList } from './DependentList';
+import { BenefitsCost } from './BenefitsCost';
 
 export const BenefitsSummary = () => {
   const [open, setDrawerOpen] = React.useState(false);
-  const { dependents, addDependent, removeDependent, loading } =
+  const { dependents, addDependent, removeDependent, loading, costBreakdown } =
     useDependentBenefits();
   const closeDrawer = () => setDrawerOpen(false);
   const openDrawer = () => setDrawerOpen(true);
@@ -20,7 +21,7 @@ export const BenefitsSummary = () => {
     >
       <Flex align='center' gap='middle' vertical>
         <Typography.Title level={2}>Benefits Summary</Typography.Title>
-        <div>Cost placeholder!</div>
+        <BenefitsCost costBreakdown={costBreakdown} loading={loading} />
         <Divider>
           <Space>
             <Typography.Text>Your Dependents</Typography.Text>
@@ -34,6 +35,7 @@ export const BenefitsSummary = () => {
           dependents={dependents}
           removeDependent={removeDependent}
           loading={loading}
+          costBreakdown={costBreakdown}
         />
         <Button icon={<UserAddOutlined />} type='dashed' onClick={openDrawer}>
           Add Dependent

@@ -1,4 +1,4 @@
-import { Dependent } from './useDependentsBenefits';
+import { Dependent, Relationship } from './useDependentsBenefits';
 import { v4 } from 'uuid';
 
 const dependentsStorageKey = 'dependents-list';
@@ -16,6 +16,20 @@ const safeGetFromLocalStorage = <T>(key: string): T | null => {
     return null;
   }
 };
+
+export type Breakdown = { [key: string]: number } & {
+  total: number;
+  paycheckAmount: number;
+  numberOfPaychecks: 26;
+};
+
+const EMPLOYEE_COST = 1000;
+const CHILD_COST = 500;
+const SPOUSE_COST = 500;
+const STARTING_WITH_LETTER = 'A';
+const NUMBER_OF_PAYCHECKS = 26;
+const PAYCHECK_AMOUNT = 2000;
+const DISCOUNT_AMOUNT = 0.9;
 
 export const http = {
   addDependent: (dependent: Omit<Dependent, 'id'>) => {
@@ -55,6 +69,52 @@ export const http = {
     return new Promise<Dependent[]>((res) => {
       setTimeout(() => {
         res(dependents);
+      }, 1500);
+    });
+  },
+  getCosts: () => {
+    const calculateCost = (person: Dependent) => {
+      const getPreDiscountTotal = () => {
+        if (person.relationship === Relationship.employee) {
+          return EMPLOYEE_COST;
+        }
+        if (person.relationship === Relationship.spouse) {
+          return SPOUSE_COST;
+        }
+        return CHILD_COST;
+      };
+
+      const cost = getPreDiscountTotal();
+      return person.firstName
+        .toLowerCase()
+        .startsWith(STARTING_WITH_LETTER.toLowerCase())
+        ? cost * DISCOUNT_AMOUNT
+        : cost;
+    };
+    const perDependentCost: { [key: string]: number } = {};
+
+    const dependents =
+      safeGetFromLocalStorage<Dependent[]>(dependentsStorageKey) || [];
+
+    dependents.forEach(
+      (dependent) => (perDependentCost[dependent.id] = calculateCost(dependent))
+    );
+
+    const total = Object.values(perDependentCost).reduce(
+      (sum, next) => sum + next,
+      0
+    );
+
+    const breakdown: Breakdown = {
+      ...perDependentCost,
+      total,
+      numberOfPaychecks: NUMBER_OF_PAYCHECKS,
+      paycheckAmount: PAYCHECK_AMOUNT,
+    };
+
+    return new Promise<Breakdown>((res) => {
+      setTimeout(() => {
+        res(breakdown);
       }, 1500);
     });
   },

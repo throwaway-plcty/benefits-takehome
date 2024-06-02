@@ -1,4 +1,4 @@
-import { Button, Space, Typography } from 'antd';
+import { Button, Space, Spin, Typography } from 'antd';
 import { Dependent, Relationship } from './useDependentsBenefits';
 import * as React from 'react';
 import { DeleteOutlined } from '@ant-design/icons';
@@ -10,9 +10,10 @@ type Props = {
     dependent: Dependent,
     successCallback?: () => void
   ): Promise<void>;
+  cost: number;
 };
 
-export const DependentItem = ({ dependent, removeDependent }: Props) => {
+export const DependentItem = ({ dependent, removeDependent, cost }: Props) => {
   const [deleting, setDeleting] = React.useState(false);
   const [notification] = useNotification();
   const onDelete = async () => {
@@ -29,6 +30,7 @@ export const DependentItem = ({ dependent, removeDependent }: Props) => {
   return (
     <Space direction='horizontal' key={dependent.id}>
       <Typography.Text>{`${dependent.firstName} ${dependent.lastName} - ${dependent.relationship}`}</Typography.Text>
+      {cost ? <Typography.Text>{`- cost $${cost}`}</Typography.Text> : <Spin />}
       <Button
         size='small'
         onClick={onDelete}

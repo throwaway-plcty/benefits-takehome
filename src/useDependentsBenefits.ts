@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { http } from './http';
+import { Breakdown, http } from './http';
 
 export enum Relationship {
   child = 'Child',
@@ -17,15 +17,26 @@ export type Dependent = {
 export const useDependentBenefits = () => {
   const [dependents, setDependents] = React.useState<Dependent[]>([]);
   const [loading, setLoading] = React.useState(false);
-  const addDependent = (dependent: Dependent) =>
-    setDependents((existing) => [...existing, dependent]);
+  const [costBreakdown, setCostBreakdown] = React.useState<Breakdown | null>(
+    null
+  );
   React.useEffect(() => {
     setLoading(true);
-    http.getDependents().then((dependents) => {
-      setDependents(dependents);
+    Promise.all([
+      http.getDependents().then((dependents) => {
+        setDependents(dependents);
+      }),
+      http.getCosts().then((breakdown) => setCostBreakdown(breakdown)),
+    ]).then(() => setLoading(false));
+  }, []);
+
+  React.useEffect(() => {
+    setLoading(true);
+    http.getCosts().then((breakdown) => {
+      setCostBreakdown(breakdown);
       setLoading(false);
     });
-  }, []);
+  }, [dependents]);
 
   const removeDependent = async (
     dependent: Dependent,
@@ -41,5 +52,8 @@ export const useDependentBenefits = () => {
     });
   };
 
-  return { dependents, addDependent, removeDependent, loading };
+  const addDependent = (dependent: Dependent) =>
+    setDependents((existing) => [...existing, dependent]);
+
+  return { dependents, addDependent, removeDependent, loading, costBreakdown };
 };
