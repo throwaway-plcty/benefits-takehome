@@ -7,7 +7,8 @@ import { DependentList } from './DependentList';
 
 export const BenefitsSummary = () => {
   const [open, setDrawerOpen] = React.useState(false);
-  const { dependents, addDependent, removeDependent } = useDependentBenefits();
+  const { dependents, addDependent, removeDependent, loading } =
+    useDependentBenefits();
   const closeDrawer = () => setDrawerOpen(false);
   const openDrawer = () => setDrawerOpen(true);
 
@@ -23,13 +24,16 @@ export const BenefitsSummary = () => {
         <Divider>
           <Space>
             <Typography.Text>Your Dependents</Typography.Text>
-            <Badge color='grey' count={dependents.length} />
+            <Badge
+              style={{ backgroundColor: 'grey' }}
+              count={dependents.length}
+            />
           </Space>
         </Divider>
         <DependentList
           dependents={dependents}
           removeDependent={removeDependent}
-          loading={false}
+          loading={loading}
         />
         <Button icon={<UserAddOutlined />} type='dashed' onClick={openDrawer}>
           Add Dependent

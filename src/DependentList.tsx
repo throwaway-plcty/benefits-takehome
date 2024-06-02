@@ -20,6 +20,7 @@ export const DependentList = ({
     <Skeleton active paragraph={{ rows: 4 }} title={false} loading={loading}>
       {dependents.map((dependent) => (
         <DependentItem
+          key={dependent.id}
           removeDependent={removeDependent}
           dependent={dependent}
         />

@@ -15,8 +15,16 @@ export type Dependent = {
 
 export const useDependentBenefits = () => {
   const [dependents, setDependents] = React.useState<Dependent[]>([]);
+  const [loading, setLoading] = React.useState(false);
   const addDependent = (dependent: Dependent) =>
     setDependents((existing) => [...existing, dependent]);
+  React.useEffect(() => {
+    setLoading(true);
+    http.getDependents().then((dependents) => {
+      setDependents(dependents);
+      setLoading(false);
+    });
+  }, []);
 
   const removeDependent = async (
     dependent: Dependent,
@@ -32,5 +40,5 @@ export const useDependentBenefits = () => {
     });
   };
 
-  return { dependents, addDependent, removeDependent };
+  return { dependents, addDependent, removeDependent, loading };
 };
