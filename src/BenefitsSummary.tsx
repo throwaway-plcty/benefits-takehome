@@ -1,7 +1,9 @@
-import { Button, Drawer, Flex, Space, Typography } from 'antd';
+import { Button, Divider, Drawer, Flex, Space, Typography } from 'antd';
+import { UserAddOutlined } from '@ant-design/icons';
 import * as React from 'react';
 import { DependentForm } from './DependentForm';
 import { useDependentBenefits } from './useDependentsBenefits';
+import { DependentList } from './DependentList';
 
 export const BenefitsSummary = () => {
   const [open, setDrawerOpen] = React.useState(false);
@@ -18,13 +20,12 @@ export const BenefitsSummary = () => {
       <Flex align='center' gap='middle' vertical>
         <Typography.Title level={2}>Benefits Summary</Typography.Title>
         <div>Cost placeholder!</div>
-        <div>Placeholder for list of dependents</div>
-        {dependents.map(({ firstName, lastName }) => (
-          <div key={firstName}>{`${firstName} ${lastName}`}</div>
-        ))}
-        <Button type='dashed' onClick={openDrawer}>
+        <Divider>Your Dependents</Divider>
+        <DependentList dependents={dependents} loading={false} />
+        <Button icon={<UserAddOutlined />} type='dashed' onClick={openDrawer}>
           Add Dependent
         </Button>
+        <Divider>Submit your changes</Divider>
         <Space>
           <Button onClick={() => {}}>Cancel</Button>
           <Button type='primary' onClick={() => {}}>
