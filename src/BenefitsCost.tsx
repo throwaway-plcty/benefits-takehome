@@ -6,14 +6,28 @@ type Props = {
   loading: boolean;
 };
 export const BenefitsCost = ({ costBreakdown, loading }: Props) => {
-  if (loading) {
-    return <Skeleton.Input size='small' active />;
+  if (loading || !costBreakdown) {
+    return <Skeleton title={false} paragraph={{ rows: 3 }} active />;
   } else {
+    const perPaycheckDeduction =
+      costBreakdown.total / costBreakdown.numberOfPaychecks;
     return (
-      <Space direction='horizontal'>
-        <Typography.Text>Your costs:</Typography.Text>
-        <Typography.Text>${costBreakdown?.total}</Typography.Text>
-      </Space>
+      <>
+        <Space size='small' direction='horizontal'>
+          <Typography.Text>Your yearly costs:</Typography.Text>
+          <Typography.Text>${costBreakdown.total.toFixed(2)}</Typography.Text>
+        </Space>
+        <Space size='small' direction='horizontal'>
+          <Typography.Text>Your monthly deduction:</Typography.Text>
+          <Typography.Text>${perPaycheckDeduction.toFixed(2)}</Typography.Text>
+        </Space>
+        <Space size='small' direction='horizontal'>
+          <Typography.Text>Your paycheck after deduction:</Typography.Text>
+          <Typography.Text>
+            ${(costBreakdown.paycheckAmount - perPaycheckDeduction).toFixed(2)}
+          </Typography.Text>
+        </Space>
+      </>
     );
   }
 };
