@@ -9,6 +9,8 @@ type Props = {
   closeDrawer(): void;
 };
 
+type DependentFormData = Omit<Dependent, 'id'>;
+
 export const DependentForm = ({ addDependent, closeDrawer }: Props) => {
   const [networkError, setNetworkError] = React.useState(false);
   const [active, setActive] = React.useState(false);
@@ -21,7 +23,7 @@ export const DependentForm = ({ addDependent, closeDrawer }: Props) => {
     }));
   }, []);
 
-  const onFinish: FormProps<Dependent>['onFinish'] = async (data) => {
+  const onFinish: FormProps<DependentFormData>['onFinish'] = async (data) => {
     setActive(true);
     try {
       const dependent = await http.addDependent(data);
@@ -41,8 +43,7 @@ export const DependentForm = ({ addDependent, closeDrawer }: Props) => {
           type='error'
         />
       )}
-      <Form.ErrorList />
-      <Form.Item<Dependent>
+      <Form.Item<DependentFormData>
         name='firstName'
         label='First Name'
         rules={[
@@ -54,7 +55,7 @@ export const DependentForm = ({ addDependent, closeDrawer }: Props) => {
       >
         <Input />
       </Form.Item>
-      <Form.Item<Dependent>
+      <Form.Item<DependentFormData>
         name='lastName'
         label='Last Name'
         rules={[
@@ -66,7 +67,7 @@ export const DependentForm = ({ addDependent, closeDrawer }: Props) => {
       >
         <Input />
       </Form.Item>
-      <Form.Item<Dependent>
+      <Form.Item<DependentFormData>
         name='relationship'
         label='Relationship'
         rules={[

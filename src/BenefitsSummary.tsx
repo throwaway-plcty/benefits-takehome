@@ -1,4 +1,4 @@
-import { Button, Divider, Drawer, Flex, Space, Typography } from 'antd';
+import { Badge, Button, Divider, Drawer, Flex, Space, Typography } from 'antd';
 import { UserAddOutlined } from '@ant-design/icons';
 import * as React from 'react';
 import { DependentForm } from './DependentForm';
@@ -7,7 +7,7 @@ import { DependentList } from './DependentList';
 
 export const BenefitsSummary = () => {
   const [open, setDrawerOpen] = React.useState(false);
-  const { dependents, addDependent } = useDependentBenefits();
+  const { dependents, addDependent, removeDependent } = useDependentBenefits();
   const closeDrawer = () => setDrawerOpen(false);
   const openDrawer = () => setDrawerOpen(true);
 
@@ -20,8 +20,17 @@ export const BenefitsSummary = () => {
       <Flex align='center' gap='middle' vertical>
         <Typography.Title level={2}>Benefits Summary</Typography.Title>
         <div>Cost placeholder!</div>
-        <Divider>Your Dependents</Divider>
-        <DependentList dependents={dependents} loading={false} />
+        <Divider>
+          <Space>
+            <Typography.Text>Your Dependents</Typography.Text>
+            <Badge color='grey' count={dependents.length} />
+          </Space>
+        </Divider>
+        <DependentList
+          dependents={dependents}
+          removeDependent={removeDependent}
+          loading={false}
+        />
         <Button icon={<UserAddOutlined />} type='dashed' onClick={openDrawer}>
           Add Dependent
         </Button>
