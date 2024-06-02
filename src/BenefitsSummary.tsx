@@ -40,13 +40,6 @@ export const BenefitsSummary = () => {
         <Button icon={<UserAddOutlined />} type='dashed' onClick={openDrawer}>
           Add Dependent
         </Button>
-        <Divider>Submit your changes</Divider>
-        <Space>
-          <Button onClick={() => {}}>Cancel</Button>
-          <Button type='primary' onClick={() => {}}>
-            Finalize
-          </Button>
-        </Space>
       </Flex>
       <Drawer
         width='400px'
