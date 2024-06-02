@@ -6,12 +6,17 @@ import { http } from './http';
 
 type Props = {
   addDependent(dependent: Dependent): void;
+  dependents: Dependent[];
   closeDrawer(): void;
 };
 
 type DependentFormData = Omit<Dependent, 'id'>;
 
-export const DependentForm = ({ addDependent, closeDrawer }: Props) => {
+export const DependentForm = ({
+  addDependent,
+  closeDrawer,
+  dependents,
+}: Props) => {
   const [networkError, setNetworkError] = React.useState(false);
   const [active, setActive] = React.useState(false);
 
@@ -73,7 +78,25 @@ export const DependentForm = ({ addDependent, closeDrawer }: Props) => {
         rules={[
           {
             required: true,
-            message: 'Relationship is required',
+            validator(_, value) {
+              if (
+                !dependents.some(
+                  (dep) => dep.relationship === Relationship.employee
+                ) &&
+                value !== Relationship.employee
+              ) {
+                return Promise.reject('Employee user must be added first');
+              }
+              if (
+                dependents.some(
+                  (dep) => dep.relationship === Relationship.employee
+                ) &&
+                value === Relationship.employee
+              ) {
+                return Promise.reject('Only one Employee can be added');
+              }
+              return Promise.resolve();
+            },
           },
         ]}
       >

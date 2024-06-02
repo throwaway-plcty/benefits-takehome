@@ -53,7 +53,11 @@ export const BenefitsSummary = () => {
         onClose={closeDrawer}
         destroyOnClose
       >
-        <DependentForm closeDrawer={closeDrawer} addDependent={addDependent} />
+        <DependentForm
+          dependents={dependents}
+          closeDrawer={closeDrawer}
+          addDependent={addDependent}
+        />
       </Drawer>
     </Flex>
   );

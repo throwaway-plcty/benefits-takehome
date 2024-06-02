@@ -4,6 +4,7 @@ import { http } from './http';
 export enum Relationship {
   child = 'Child',
   spouse = 'Spouse',
+  employee = 'Employee',
 }
 
 export type Dependent = {

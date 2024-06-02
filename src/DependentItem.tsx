@@ -1,5 +1,5 @@
 import { Button, Space, Typography } from 'antd';
-import { Dependent } from './useDependentsBenefits';
+import { Dependent, Relationship } from './useDependentsBenefits';
 import * as React from 'react';
 import { DeleteOutlined } from '@ant-design/icons';
 import useNotification from 'antd/es/notification/useNotification';
@@ -33,6 +33,7 @@ export const DependentItem = ({ dependent, removeDependent }: Props) => {
         size='small'
         onClick={onDelete}
         loading={deleting}
+        disabled={dependent.relationship === Relationship.employee}
         danger
         icon={<DeleteOutlined size={10} />}
       />
